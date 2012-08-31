@@ -16,7 +16,7 @@ from django.conf import settings
 from django.core.files import File
 from django.core.management.base import BaseCommand, CommandError
 
-from dbtemplates.models import Template
+from dbtemplates.models import Template, remove_cached_template
 
 
 # Attempt to load a file system notification/event library, falling through
@@ -78,6 +78,7 @@ class fs(object):
     """Format strings referenceable as class attributes."""
     changed = 'file changed name=%s, path=%s'
     notmpl = 'template with name %s does not exist in database'
+    purged = 'template cache purged'
     saved = 'saved template name=%s, id=%s'
     start = 'monitoring %s for changes (Control+C to exit)'
 
@@ -112,6 +113,8 @@ if linux_impl:
                 template.content = open(full).read()
                 template.save()
                 info(fs.saved, match, template.id)
+                remove_cached_template(template)
+                info(fs.purged)
             else:
                 warn(fs.notmpl, match)
 
@@ -160,6 +163,8 @@ if macos_impl:
                 template.content = open(full).read()
                 template.save()
                 info(fs.saved, match, template.id)
+                remove_cached_template(template)
+                info(fs.purged)
             else:
                 warn(fs.notmpl, match)
         return callback
