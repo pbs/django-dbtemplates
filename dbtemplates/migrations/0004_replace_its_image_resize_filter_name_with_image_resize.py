@@ -5,6 +5,19 @@ from south.v2 import SchemaMigration
 from django.db import models
 from django.db import router
 from dbtemplates.models import Template
+import re
+
+PATTERN_LOAD = r'(\{% load .*)%s(.*%\})'
+PATTERN_FILTER = r'(\{\{.*\|)%s(:"\d*x|X\d*".*\}\})'
+
+
+def regex_replace(content, old, new):
+    pattern = re.compile(PATTERN_LOAD % old)
+    new_content = pattern.sub(r'\1%s\2' % new, content)
+
+    pattern = re.compile(PATTERN_FILTER % old)
+    return pattern.sub(r'\1%s\2' % new, new_content)
+
 
 class Migration(SchemaMigration):
 
@@ -14,8 +27,7 @@ class Migration(SchemaMigration):
         templates = orm.models.get("dbtemplates.template").objects\
                         .db_manager(router.db_for_write(Template)).all()
         for tpl in templates:
-            new_template_code = tpl.content.replace(old, new)
-            tpl.content = new_template_code
+            tpl.content = regex_replace(tpl.content, old, new)
             tpl.save()
 
     def forwards(self, orm):
