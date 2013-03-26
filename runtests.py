@@ -8,7 +8,7 @@ from django.conf import settings
 sys.path.insert(0, dirname(abspath(__file__)))
 
 if not settings.configured:
-    os.environ['DJANGO_SETTINGS_MODULE'] = 'settings_test'
+    os.environ['DJANGO_SETTINGS_MODULE'] = 'dbtemplates.test_settings'
 
 from django_nose import NoseTestSuiteRunner
 
@@ -18,12 +18,12 @@ class TestsWrapper(unittest.TestCase):
         super(TestsWrapper, self).__init__()
         from django.conf import settings
         if not settings.configured:
-            os.environ['DJANGO_SETTINGS_MODULE'] = 'settings_test'
+            os.environ['DJANGO_SETTINGS_MODULE'] = 'dbtemplates.test_settings'
         if 'south' in settings.INSTALLED_APPS:
             from south.management.commands import patch_for_test_db_setup
             patch_for_test_db_setup()
         if not test_args:
-            test_args = ['dbtemplates']
+            test_args = ['dbtemplates.tests']
             kwargs.setdefault('interactive', False)
             test_runner = NoseTestSuiteRunner(**kwargs)
             self._failures = test_runner.run_tests(test_args)
