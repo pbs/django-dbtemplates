@@ -49,4 +49,7 @@ setup(
     ],
     install_requires=['django-appconf >= 0.4',],
     setup_requires=['s3sourceuploader',],
+    tests_require=['Django==1.4.1', 'django-nose'],
+    test_suite='runtests.runtests',
+
 )
