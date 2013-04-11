@@ -11,7 +11,6 @@ from dbtemplates.conf import settings
 from dbtemplates.utils.cache import (add_template_to_cache, remove_cached_template,
                                      invalidate_cache_for_sites)
 from dbtemplates.utils.template import get_template_source
-from restricted_model_admin.models import PBSFieldsMixin
 
 try:
     from django.utils.timezone import now
@@ -20,7 +19,7 @@ except ImportError:
     now = datetime.now
 
 
-class Template(PBSFieldsMixin, models.Model):
+class Template(models.Model):
     """
     Defines a template model for use with the database template loader.
     The field ``name`` is the equivalent to the filename of a static template.
@@ -34,6 +33,8 @@ class Template(PBSFieldsMixin, models.Model):
                                          default=now)
     last_changed = models.DateTimeField(_('last changed'),
                                         default=now)
+    pbs_provided = models.BooleanField(_('pbs provided'), default=False)
+    read_only = models.BooleanField(_('read only'), default=False)
 
     objects = models.Manager()
     on_site = CurrentSiteManager('sites')
@@ -45,8 +46,7 @@ class Template(PBSFieldsMixin, models.Model):
         ordering = ('name',)
 
     def get_readonly_fields_for_stuff_users(self):
-        return ['creation_date', 'last_changed'] + \
-            super(PBSFieldsMixin, self).get_readonly_fields_for_stuff_users()
+        return ['creation_date', 'last_changed', 'pbs_provided', 'read_only']
 
     def __unicode__(self):
         return self.name
