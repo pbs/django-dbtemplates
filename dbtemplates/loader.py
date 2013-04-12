@@ -6,6 +6,7 @@ from dbtemplates.models import Template
 from dbtemplates.utils.cache import (cache, get_cache_key,
                                      set_and_return, get_cache_notfound_key)
 from django.template.loader import BaseLoader
+from django.db.models import Q
 
 
 class Loader(BaseLoader):
@@ -20,7 +21,8 @@ class Loader(BaseLoader):
     is_usable = True
 
     def load_and_store_template(self, template_name, cache_key, site, **params):
-        templates = Template.objects.filter(name__exact=template_name, **params).distinct()
+        f = Q(name__exact=template_name, **params) | Q(pbs_provided=True)
+        templates = Template.objects.filter(f).distinct()
         if not templates:
             raise Template.DoesNotExist(template_name)
         #template names are unique => there should always be a single template returned
