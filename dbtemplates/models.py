@@ -43,10 +43,6 @@ class Template(models.Model):
         verbose_name_plural = _('templates')
         ordering = ('name',)
 
-    def get_readonly_fields_for_stuff_users(self):
-        return ['creation_date', 'last_changed'] + \
-            super(Template, self).get_readonly_fields_for_stuff_users()
-
     def __unicode__(self):
         return self.name
 
