@@ -145,3 +145,14 @@ class DbTemplatesTestCase(TestCase):
     def test_get_cache_name(self):
         self.assertEqual(get_cache_key('name with spaces'),
                          'dbtemplates::name-with-spaces::1')
+
+
+class TemplateModelTests(TestCase):
+    def test_template_name_clean(self):
+        """
+        Tests whether extra trailing whitespace is removed
+        from template name (LUN-782)
+        """
+
+        template = Template.objects.create(name='Trimmed   ')
+        self.assertEqual(template.name, 'Trimmed')
