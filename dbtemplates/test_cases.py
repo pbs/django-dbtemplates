@@ -5,6 +5,7 @@ import tempfile
 
 from django.conf import settings as django_settings
 from django.core.cache.backends.base import BaseCache
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.template import loader, Context, TemplateDoesNotExist
 from django.test import TestCase
@@ -147,12 +148,27 @@ class DbTemplatesTestCase(TestCase):
                          'dbtemplates::name-with-spaces::1')
 
 
-class TemplateModelTests(TestCase):
-    def test_template_name_clean(self):
-        """
-        Tests whether extra trailing whitespace is removed
-        from template name (LUN-782)
-        """
+class TemplateModelNameCleanTests(TestCase):
+    """
+    Tests whether extra trailing whitespace is removed
+    from template name (LUN-782)
+    """
 
+    def test_template_name_clean_without_trailing_whitespace(self):
+        template = Template.objects.create(name='NoTrim')
+        self.assertEqual(template.name, 'NoTrim')
+
+    def test_template_name_clean_with_preceding_whitespace(self):
+        template = Template.objects.create(name='  NoTrim')
+        self.assertEqual(template.name, '  NoTrim')
+
+    def test_template_name_clean_with_trailing_whitespace(self):
         template = Template.objects.create(name='Trimmed   ')
         self.assertEqual(template.name, 'Trimmed')
+
+    def test_template_name_clean_with_whitespace(self):
+        template = Template.objects.create(name='  Trimmed   ')
+        self.assertEqual(template.name, '  Trimmed')
+
+    def test_template_name_clean_only_whitespace(self):
+        self.assertRaises(ValidationError, Template.objects.create, name='  ')
