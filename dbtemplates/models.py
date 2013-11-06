@@ -60,7 +60,16 @@ class Template(models.Model):
         except TemplateDoesNotExist:
             pass
 
+    def clean_fields(self, exclude=None):
+        """Remove extra trailing whitespace from template name (LUN-782)"""
+
+        super(Template, self).clean_fields(exclude)
+        self.name = self.name.rstrip()
+
     def save(self, *args, **kwargs):
+        # Always clean template name before save (LUN-782)
+        self.clean_fields()
+
         self.last_changed = now()
         # If content is empty look for a template with the given name and
         # populate the template instance with its content.
