@@ -149,18 +149,14 @@ class DbTemplatesTestCase(TestCase):
 
 
 class TemplateModelNameCleanTests(TestCase):
-    """
-    Tests whether extra trailing whitespace is removed
-    from template name (LUN-782)
-    """
 
     def test_template_name_clean_without_trailing_whitespace(self):
         template = Template.objects.create(name='NoTrim')
         self.assertEqual(template.name, 'NoTrim')
 
     def test_template_name_clean_with_preceding_whitespace(self):
-        template = Template.objects.create(name='  NoTrim')
-        self.assertEqual(template.name, '  NoTrim')
+        template = Template.objects.create(name='  Trimmed')
+        self.assertEqual(template.name, 'Trimmed')
 
     def test_template_name_clean_with_trailing_whitespace(self):
         template = Template.objects.create(name='Trimmed   ')
@@ -168,7 +164,7 @@ class TemplateModelNameCleanTests(TestCase):
 
     def test_template_name_clean_with_whitespace(self):
         template = Template.objects.create(name='  Trimmed   ')
-        self.assertEqual(template.name, '  Trimmed')
+        self.assertEqual(template.name, 'Trimmed')
 
     def test_template_name_clean_only_whitespace(self):
         self.assertRaises(ValidationError, Template.objects.create, name='  ')

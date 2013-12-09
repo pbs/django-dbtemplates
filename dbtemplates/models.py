@@ -61,13 +61,12 @@ class Template(models.Model):
             pass
 
     def clean_fields(self, exclude=None):
-        """Remove extra trailing whitespace from template name (LUN-782)"""
-
-        self.name = self.name.rstrip()
+        self.name = self.name.strip()
         super(Template, self).clean_fields(exclude)
 
     def save(self, *args, **kwargs):
-        # Always clean template name before save (LUN-782)
+        # Clean method is not called when creating objects manually
+        # e.g.: Template.objects.create()
         self.clean_fields()
 
         self.last_changed = now()
