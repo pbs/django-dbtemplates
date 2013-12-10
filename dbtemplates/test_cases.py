@@ -150,21 +150,30 @@ class DbTemplatesTestCase(TestCase):
 
 class TemplateModelNameCleanTests(TestCase):
 
-    def test_template_name_clean_without_trailing_whitespace(self):
-        template = Template.objects.create(name='NoTrim')
+    def test_template_name_clean_without_whitespace(self):
+        template = Template(name='NoTrim')
+        template.full_clean()
         self.assertEqual(template.name, 'NoTrim')
 
     def test_template_name_clean_with_preceding_whitespace(self):
-        template = Template.objects.create(name='  Trimmed')
+        template = Template(name='  Trimmed')
+        template.full_clean()
         self.assertEqual(template.name, 'Trimmed')
 
     def test_template_name_clean_with_trailing_whitespace(self):
-        template = Template.objects.create(name='Trimmed   ')
+        template = Template(name='Trimmed   ')
+        template.full_clean()
         self.assertEqual(template.name, 'Trimmed')
 
     def test_template_name_clean_with_whitespace(self):
-        template = Template.objects.create(name='  Trimmed   ')
+        template = Template(name='  Trimmed   ')
+        template.full_clean()
         self.assertEqual(template.name, 'Trimmed')
 
     def test_template_name_clean_only_whitespace(self):
-        self.assertRaises(ValidationError, Template.objects.create, name='  ')
+        template = Template(name='  ')
+        self.assertRaises(ValidationError, template.full_clean)
+
+    def test_template_name_no_clean(self):
+        template = Template.objects.create(name='   NoTrim ')
+        self.assertEqual(template.name, '   NoTrim ')

@@ -65,10 +65,6 @@ class Template(models.Model):
         super(Template, self).clean_fields(exclude)
 
     def save(self, *args, **kwargs):
-        # Clean method is not called when creating objects manually
-        # e.g.: Template.objects.create()
-        self.clean_fields()
-
         self.last_changed = now()
         # If content is empty look for a template with the given name and
         # populate the template instance with its content.
