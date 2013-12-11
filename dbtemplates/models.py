@@ -60,6 +60,10 @@ class Template(models.Model):
         except TemplateDoesNotExist:
             pass
 
+    def clean_fields(self, exclude=None):
+        self.name = self.name.strip()
+        super(Template, self).clean_fields(exclude)
+
     def save(self, *args, **kwargs):
         self.last_changed = now()
         # If content is empty look for a template with the given name and
