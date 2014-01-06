@@ -21,7 +21,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'dbtemplates',
-    'django_nose',
 ]
 
 TEMPLATE_LOADERS = (
@@ -29,5 +28,3 @@ TEMPLATE_LOADERS = (
     'django.template.loaders.app_directories.Loader',
     'dbtemplates.loader.Loader',
 )
-
-TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
