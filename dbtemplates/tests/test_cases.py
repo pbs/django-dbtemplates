@@ -5,6 +5,7 @@ import tempfile
 
 from django.conf import settings as django_settings
 from django.core.cache.backends.base import BaseCache
+from django.core.exceptions import ValidationError
 from django.core.management import call_command
 from django.template import loader, Context, TemplateDoesNotExist
 from django.test import TestCase
@@ -145,3 +146,34 @@ class DbTemplatesTestCase(TestCase):
     def test_get_cache_name(self):
         self.assertEqual(get_cache_key('name with spaces'),
                          'dbtemplates::name-with-spaces::1')
+
+
+class TemplateModelNameCleanTests(TestCase):
+
+    def test_template_name_clean_without_whitespace(self):
+        template = Template(name='NoTrim')
+        template.full_clean()
+        self.assertEqual(template.name, 'NoTrim')
+
+    def test_template_name_clean_with_preceding_whitespace(self):
+        template = Template(name='  Trimmed')
+        template.full_clean()
+        self.assertEqual(template.name, 'Trimmed')
+
+    def test_template_name_clean_with_trailing_whitespace(self):
+        template = Template(name='Trimmed   ')
+        template.full_clean()
+        self.assertEqual(template.name, 'Trimmed')
+
+    def test_template_name_clean_with_whitespace(self):
+        template = Template(name='  Trimmed   ')
+        template.full_clean()
+        self.assertEqual(template.name, 'Trimmed')
+
+    def test_template_name_clean_only_whitespace(self):
+        template = Template(name='  ')
+        self.assertRaises(ValidationError, template.full_clean)
+
+    def test_template_name_no_clean(self):
+        template = Template.objects.create(name='   NoTrim ')
+        self.assertEqual(template.name, '   NoTrim ')
