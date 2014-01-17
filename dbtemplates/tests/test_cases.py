@@ -66,10 +66,10 @@ class DbTemplatesTestCase(TestCase):
         try:
             settings.DBTEMPLATES_ADD_DEFAULT_SITE = False
             t_site1 = Template.objects.create(
-                name='copyright.html', content='(c) example.com')
+                name='copyrightcom.html', content='(c) example.com')
             t_site1.sites.add(self.site1)
             t_site2 = Template.objects.create(
-                name='copyright.html', content='(c) example.org')
+                name='copyrightorg.html', content='(c) example.org')
             t_site2.sites.add(self.site2)
 
             django_settings.SITE_ID = Site.objects.create(

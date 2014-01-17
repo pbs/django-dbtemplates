@@ -1,11 +1,11 @@
 *.pyc
 .*.swp
 MANIFEST
-build
 dist
 *.egg-info
 example/example.db
 docs/_build
-.tox/
+.tox
 *.egg/
 .coverage
+pytest-results.xml
