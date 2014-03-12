@@ -9,3 +9,4 @@ docs/_build
 *.egg/
 .coverage
 pytest-results.xml
+*.pyo
