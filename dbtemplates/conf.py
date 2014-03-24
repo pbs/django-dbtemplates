@@ -1,4 +1,5 @@
 import posixpath
+import datetime
 
 from django.core.exceptions import ImproperlyConfigured
 from django.conf import settings
@@ -14,6 +15,7 @@ class DbTemplatesConf(AppConf):
     AUTO_POPULATE_CONTENT = True
     MEDIA_PREFIX = None
     CACHE_BACKEND = None
+    CACHE_TIMEOUT = datetime.timedelta(days=7).total_seconds()
 
     def configure_media_prefix(self, value):
         if value is None:

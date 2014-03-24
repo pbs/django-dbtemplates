@@ -1,8 +1,6 @@
 from django.core.cache import get_cache
-
 from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
-
 from dbtemplates.conf import settings
 
 
@@ -19,13 +17,10 @@ def get_cache_key(template_name):
     )
 
 
-def get_cache_notfound_key(name, site_pk=None):
-    return get_cache_key(name, site_pk) + '::notfound'
-
-
 def set_and_return(key, value):
+    cache_timeout = getattr(settings, 'DBTEMPLATES_CACHE_TIMEOUT')
     if cache:
-        cache.set(key, value)
+        cache.set(key, value, cache_timeout)
     return value
 
 
