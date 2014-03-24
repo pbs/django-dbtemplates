@@ -1,5 +1,4 @@
 from django.core.cache import get_cache
-from django.contrib.sites.models import Site
 from django.template.defaultfilters import slugify
 from dbtemplates.conf import settings
 
@@ -17,11 +16,13 @@ def get_cache_key(template_name):
     )
 
 
-def set_and_return(key, value):
-    cache_timeout = getattr(settings, 'DBTEMPLATES_CACHE_TIMEOUT')
+def fetch_template_from_cache(template_name, satisfies_permissions):
+    """Returns a template_name from the cache conditionaly."""
     if cache:
-        cache.set(key, value, cache_timeout)
-    return value
+        key = get_cache_key(template_name)
+        cache_value = cache.get(key)
+        if satisfies_permissions(cache_value):
+            return cache_value.get('content')
 
 
 def add_template_to_cache(instance, **kwargs):
@@ -35,7 +36,9 @@ def add_template_to_cache(instance, **kwargs):
         'content': instance.content,
         'sites':  set(instance.sites.values_list('pk', flat=True))
     }
-    return set_and_return(key, value)
+    if cache:
+        cache_timeout = getattr(settings, 'DBTEMPLATES_CACHE_TIMEOUT')
+        cache.set(key, value, cache_timeout)
 
 
 def remove_cached_template(instance, **kwargs):
