@@ -88,6 +88,16 @@ def add_default_site(instance, **kwargs):
         instance.sites.add(current_site)
 
 
+def change_sites(instance, action, model, pk_set, **kwargs):
+    if action == 'post_add' or action == 'post_remove':
+        if isinstance(instance, Site):
+            template_set = model.objects.filter(pk__in=pk_set)
+            map(add_template_to_cache, template_set)
+        elif isinstance(instance, Template):
+            add_template_to_cache(instance)
+
+
 signals.post_save.connect(add_default_site, sender=Template)
 signals.post_save.connect(add_template_to_cache, sender=Template)
 signals.pre_delete.connect(remove_cached_template, sender=Template)
+signals.m2m_changed.connect(change_sites, sender=Template.sites.through)
