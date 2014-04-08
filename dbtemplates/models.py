@@ -89,7 +89,7 @@ def add_default_site(instance, **kwargs):
 
 
 def change_sites(instance, action, model, pk_set, **kwargs):
-    if action == 'post_add' or action == 'post_remove':
+    if action in ('post_add', 'post_remove'):
         if isinstance(instance, Site):
             template_set = model.objects.filter(pk__in=pk_set)
             map(add_template_to_cache, template_set)
