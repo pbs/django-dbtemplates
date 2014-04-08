@@ -15,14 +15,8 @@ class DbTemplatesConf(AppConf):
     AUTO_POPULATE_CONTENT = True
     MEDIA_PREFIX = None
     CACHE_BACKEND = None
-    CACHE_TIMEOUT = None
+    CACHE_TIMEOUT = datetime.timedelta(days=7).total_seconds()
 
-    def configure_cache_timeout(self, value):
-        if value is None:
-            default = datetime.timedelta(days=7).total_seconds()
-            value = getattr(settings, "DBTEMPLATE_CACHE_TIMEOUT", default)
-        return value
-    
     def configure_media_prefix(self, value):
         if value is None:
             base_url = getattr(settings, "STATIC_URL", None)
