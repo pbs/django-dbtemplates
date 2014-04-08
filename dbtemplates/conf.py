@@ -20,7 +20,7 @@ class DbTemplatesConf(AppConf):
     def configure_cache_timeout(self, value):
         if value is None:
             default = datetime.timedelta(days=7).total_seconds()
-            value = getattr(settings, "DBTEMPLATES_CACHE_TIMEOUT", default)
+            value = getattr(settings, "DBTEMPLATE_CACHE_TIMEOUT", default)
         return value
     
     def configure_media_prefix(self, value):
