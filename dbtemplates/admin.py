@@ -79,6 +79,7 @@ class TemplateAdminForm(forms.ModelForm):
 
     class Meta:
         model = Template
+        exclude = ()
 
 
 class TemplateAdmin(TemplateModelAdmin):
