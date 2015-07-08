@@ -99,6 +99,7 @@ class TemplateAdmin(TemplateModelAdmin):
     )
     filter_horizontal = ('sites',)
     list_display = ('name', 'creation_date', 'last_changed', 'site_list')
+    readonly_fields = ('creation_date', 'last_changed')
     list_filter = ('sites',)
     save_as = True
     search_fields = ('name', 'content')
