@@ -1,6 +1,18 @@
 CHANGELOG
 =========
 
+Revision 0d6b766 (17.07.2015, 09:58 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * --pre allows django 1.8 prereleases installation
+  * Django 1.7 upgrade; added migrations; changed datetime fields
+  * Django 1.7 upgrade; added django migrations; fixed tox & deprecation warnings
+  * Django 1.6 upgrade: fixed urls import
+
 Revision 6038c6e (17.04.2014, 13:15 UTC)
 ----------------------------------------
 
