@@ -9,7 +9,7 @@ from dbtemplates.utils.cache import (
     fetch_template_from_cache,
     cache,
 )
-from django.template.loader import BaseLoader
+from django.template.loaders.base import Loader as BaseLoader
 
 
 def site_cache_permission_rule(current_site, cache_value):

@@ -4,7 +4,9 @@ from optparse import make_option
 
 from django.contrib.sites.models import Site
 from django.core.management.base import CommandError, NoArgsCommand
-from django.template.loaders.app_directories import app_template_dirs
+
+from django.template import Engine
+from django.template.utils import get_app_template_dirs
 
 from dbtemplates.conf import settings
 from dbtemplates.models import Template
@@ -40,20 +42,18 @@ class Command(NoArgsCommand):
         if not extension.startswith("."):
             extension = ".%s" % extension
 
+        template_engine = Engine.get_default()
         try:
             site = Site.objects.get_current()
         except:
             raise CommandError("Please make sure to have the sites contrib "
                                "app installed and setup with a site object")
 
-        if not type(settings.TEMPLATE_DIRS) in (tuple, list):
-            raise CommandError("Please make sure settings.TEMPLATE_DIRS is a "
-                               "list or tuple.")
-
+        app_dirs = list(get_app_template_dirs('templates'))
         if app_first:
-            tpl_dirs = app_template_dirs + settings.TEMPLATE_DIRS
+            tpl_dirs = app_dirs + list(template_engine.dirs)
         else:
-            tpl_dirs = settings.TEMPLATE_DIRS + app_template_dirs
+            tpl_dirs = list(template_engine.dirs) + app_dirs
         templatedirs = [d for d in tpl_dirs if os.path.isdir(d)]
 
         for templatedir in templatedirs:

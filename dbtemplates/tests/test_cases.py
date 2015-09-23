@@ -7,7 +7,7 @@ from django.conf import settings as django_settings
 from django.core.cache.backends.base import BaseCache
 from django.core.exceptions import ValidationError
 from django.core.management import call_command
-from django.template import loader, Context, TemplateDoesNotExist
+from django.template import loader, Context, TemplateDoesNotExist, Engine
 from django.test import TestCase
 
 from django.contrib.sites.models import Site
@@ -23,12 +23,6 @@ from dbtemplates.management.commands.sync_templates import (FILES_TO_DATABASE,
 
 class DbTemplatesTestCase(TestCase):
     def setUp(self):
-        self.old_template_loaders = settings.TEMPLATE_LOADERS
-        if 'dbtemplates.loader.Loader' not in settings.TEMPLATE_LOADERS:
-            loader.template_source_loaders = None
-            settings.TEMPLATE_LOADERS = (list(settings.TEMPLATE_LOADERS) +
-                                         ['dbtemplates.loader.Loader'])
-
         self.site1, created1 = Site.objects.get_or_create(
             domain="example.com", name="example.com")
         self.site2, created2 = Site.objects.get_or_create(
@@ -38,10 +32,6 @@ class DbTemplatesTestCase(TestCase):
         self.t2, _ = Template.objects.get_or_create(
             name='sub.html', content='sub')
         self.t2.sites.add(self.site2)
-
-    def tearDown(self):
-        loader.template_source_loaders = None
-        settings.TEMPLATE_LOADERS = self.old_template_loaders
 
     def test_basiscs(self):
         self.assertEqual(list(self.t1.sites.all()), [self.site1])
@@ -100,13 +90,13 @@ class DbTemplatesTestCase(TestCase):
         self.assertEqual(admin_base_template, template.content)
 
     def test_sync_templates(self):
-        old_template_dirs = settings.TEMPLATE_DIRS
+        old_template_dirs = Engine.get_default().dirs
         temp_template_dir = tempfile.mkdtemp('dbtemplates')
         temp_template_path = os.path.join(temp_template_dir, 'temp_test.html')
         temp_template = codecs.open(temp_template_path, 'w')
         try:
             temp_template.write('temp test')
-            settings.TEMPLATE_DIRS = (temp_template_dir,)
+            Engine.get_default().dirs = (temp_template_dir,)
             self.assertFalse(
                 Template.objects.filter(name='temp_test.html').exists())
             call_command('sync_templates',
@@ -129,7 +119,7 @@ class DbTemplatesTestCase(TestCase):
                 Template.objects.filter(name='temp_test.html').exists())
         finally:
             temp_template.close()
-            settings.TEMPLATE_DIRS = old_template_dirs
+            Engine.get_default().dirs = old_template_dirs
             shutil.rmtree(temp_template_dir)
 
     def test_get_cache(self):
