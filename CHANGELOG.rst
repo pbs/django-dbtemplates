@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision 5a690fa (01.10.2015, 12:18 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Add missing migration 0002.
+
 Revision 3211a1f (23.09.2015, 15:08 UTC)
 ----------------------------------------
 
