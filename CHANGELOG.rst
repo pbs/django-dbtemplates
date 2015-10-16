@@ -1,6 +1,17 @@
 CHANGELOG
 =========
 
+Revision e3032a0 (16.10.2015, 12:06 UTC)
+----------------------------------------
+
+* LUN-2702
+
+  * Handle new exception thrown by django.contrib.sites.models.SiteManager
+
+* Misc commits
+
+  * Update __init__.py
+
 Revision 5a690fa (01.10.2015, 12:18 UTC)
 ----------------------------------------
 
