@@ -1,6 +1,7 @@
 import sys
 from optparse import make_option
 
+from django.core.exceptions import ImproperlyConfigured
 from django.core.management.base import CommandError, NoArgsCommand
 from django.contrib.sites.models import Site
 
@@ -36,7 +37,7 @@ class Command(NoArgsCommand):
         force = options.get('force')
         try:
             site = Site.objects.get_current()
-        except Site.DoesNotExist:
+        except (Site.DoesNotExist, ImproperlyConfigured):
             raise CommandError("Please make sure to have the sites contrib "
                                "app installed and setup with a site object")
 
