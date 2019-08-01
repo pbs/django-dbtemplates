@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision f56ecc2 (01.08.2019, 09:21 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Pin pytest and pytest-django
+
 Revision e3032a0 (16.10.2015, 12:06 UTC)
 ----------------------------------------
 
