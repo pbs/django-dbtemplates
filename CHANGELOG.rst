@@ -1,6 +1,15 @@
 CHANGELOG
 =========
 
+Revision bf5fe46 (04.10.2019, 12:13 UTC)
+----------------------------------------
+
+No new issues.
+
+* Misc commits
+
+  * Pin attrs package
+
 Revision f56ecc2 (01.08.2019, 09:21 UTC)
 ----------------------------------------
 
